@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import Replicate from 'replicate';
 
 import { FILESTACK_API_KEY, KEY_LIST_URL, MASTER_KEY } from './relay-config.js';
-import './secrets.js';
+
 
 import attachProxyRoutes from './proxy-server.js';
 import boostRoute from '../routes/boostRoute.js';
