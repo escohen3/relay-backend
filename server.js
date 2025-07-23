@@ -30,6 +30,7 @@ attachProxyRoutes(app);
 app.use('/gpt-metadata', gptImageRoute);
 app.use('/gpt-text', gptTextRoute);
 app.use('/gpt-color', gptColorRoute);
+app.use('/gpt-image', imageRoute);
 app.use('/boost', boostRoute);
 
 // 🖼 Replicate direct test endpoint
