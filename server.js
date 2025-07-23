@@ -8,10 +8,10 @@ import { FILESTACK_API_KEY, KEY_LIST_URL, MASTER_KEY } from './relay-config.js';
 
 
 import attachProxyRoutes from './proxy-server.js';
-import boostRoute from '../routes/boostRoute.js';
-import gptColorRoute from '../routes/gpt-color.js';
-import gptImageRoute from '../routes/gpt-image.js';
-import gptTextRoute from '../routes/gpt-text.js';
+import boostRoute from './routes/boostRoute.js';
+import gptColorRoute from './routes/gpt-color.js';
+import gptImageRoute from './routes/gpt-image.js';
+import gptTextRoute from './routes/gpt-text.js';
 
 // 🔑 Load environment variables
 dotenv.config();
