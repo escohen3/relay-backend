@@ -1,0 +1,23 @@
+{
+  "name": "relay-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Relay backend server with Replicate and GPT image metadata",
+  "author": "Eric Cohen",
+  "license": "ISC",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2",
+    "replicate": "^1.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
