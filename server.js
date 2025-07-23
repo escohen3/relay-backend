@@ -30,7 +30,7 @@ attachProxyRoutes(app);
 app.use('/gpt-metadata', gptImageRoute);
 app.use('/gpt-text', gptTextRoute);
 app.use('/gpt-color', gptColorRoute);
-app.use('/boost', boostRoute);
+app.use('/boost-image', boostRoute);
 
 // 🖼 Replicate direct test endpoint
 app.post('/replicate', async (req, res) => {
