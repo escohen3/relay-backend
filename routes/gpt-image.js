@@ -160,7 +160,11 @@ router.post('/', async (req, res) => {
       return res.status(500).json({ error: 'GPT returned invalid JSON', raw: content });
     }
 
-    res.json(metadata);
+    res.json({
+      engine: "image",
+      ...metadata
+    });
+    
   } catch (err) {
     console.error('🔥 GPT Image Handler Failed:', err.message);
     res.status(500).json({ error: 'Internal server error', message: err.message });
