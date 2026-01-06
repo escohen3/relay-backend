@@ -16,36 +16,110 @@ router.post('/', async (req, res) => {
 
     const messages = [
       {
-        role: 'user',
+        role: "system",
+        content: `
+    You are a visual analysis engine for a personal archive.
+    
+    You examine images as evidence, artifacts, and records.
+    Your task is to DESCRIBE, CLASSIFY, and CONTEXTUALIZE what is visible.
+    You do NOT invent stories, characters, or emotions.
+    
+    CRITICAL REQUIREMENTS:
+    - Respond ONLY with valid JSON.
+    - No markdown, no commentary, no explanation.
+    - If any requirement is violated, the response is INVALID.
+    
+    Return EXACTLY this structure:
+    
+    {
+      "title": string,       
+    
+      "summary": string[],   
+    
+      "category": string,    
+    
+      "signals": string[],   
+    
+      "composition": {
+        "orientation": string,
+        "aspect_ratio": string,
+        "dominant_elements": string[],
+        "spatial_structure": string
+      },
+    
+      "color_notes": string[],
+    
+      "file_observations": {
+        "likely_context": string,
+        "probable_use": string,
+        "confidence": number
+      }
+    }
+    
+    FIELD RULES:
+    
+    "title"
+    - 2–5 words.
+    - Neutral, descriptive, archival.
+    - No metaphor.
+    
+    "summary"
+    - EXACTLY 3 paragraphs.
+    - Each paragraph must be 3–5 full sentences.
+    - Written as plain prose.
+    - No poetic language.
+    
+    Paragraph intent:
+    1) Surface description  
+       Describe what is visible. Objects, setting, materials, light, motion, absence.
+    
+    2) Functional or situational context  
+       Explain what kind of image this appears to be and what it might be used for.
+       Reference cues without speculation.
+    
+    3) Archival relevance  
+       Explain why this image might matter later.
+       What it preserves, documents, or signals about a moment or process.
+    
+    "category"
+    - Single short phrase (e.g. "interface", "environment", "object", "document", "portrait", "diagram")
+    
+    "signals"
+    - 4–8 short phrases capturing notable traits or cues
+    - Example: ["low light", "interior space", "human absence", "designed object"]
+    
+    "composition"
+    - orientation: portrait / landscape / square
+    - aspect_ratio: simplified ratio (e.g. 16:9, 4:3, 1:1)
+    - dominant_elements: list of 3–6 visible components
+    - spatial_structure: how space is organized or framed
+    
+    "color_notes"
+    - Concrete observations only
+    - No symbolism
+    - Example: ["muted palette", "warm highlights", "dominant neutral tones"]
+    
+    "file_observations"
+    - likely_context: where or how this image was probably produced
+    - probable_use: documentation, reference, memory, analysis, record
+    - confidence: number from 0.0 to 1.0
+    
+    STYLE RULES:
+    - Concrete language only.
+    - No metaphor.
+    - No emotional projection.
+    - No guessing intent beyond visual evidence.
+    `
+      },
+      {
+        role: "user",
         content: [
-          {
-            type: 'text',
-            text: `Analyze this image and return poetic JSON metadata in this format:
-{
-  "title": "2–3 word poetic title",
-  "poem": ["Width x Height in pixels"],
-"summary": [
-  "Write a short story in three paragraphs. Use <p>...</p> tags only to separate each paragraph. Do not include <br> tags, newlines, or any extra formatting.",
-  "The story should follow a clear narrative arc with a beginning, middle, and end.",
-  "<p> Paragraph 1: Introduce the setting or moment. Let the image suggest a sense of calm, beauty, or ordinary life unfolding. </p>",
-  "<p> Paragraph 2: Introduce disruption — a challenge, conflict, or loss that shifts the tone. </p>",
-  "<p> Paragraph 3: Resolve the story. Show how the character or world adapts or grows. End with a quiet but clear sense of change. </p>"
-],
-  "hashtags": ["#emotion", "#culture", "#style"],
-  "category": "Theme or visual genre (e.g. portrait, abstraction, landscape)",
-  "enhanced": "Expressive, 1-sentence description of the image’s essence",
-  "vignette": "Short story fragment or character moment evoked by the image",
-  "size": "Aspect Ratio (e.g. 16:9)"
-}
-Respond with valid JSON only.`
-          },
-          {
-            type: 'image_url',
-            image_url: { url: imageUrl }
-          }
+          { type: "text", text: "Analyze the following image." },
+          { type: "image_url", image_url: { url: imageUrl } }
         ]
       }
     ];
+    
 
     const gptResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

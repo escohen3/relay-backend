@@ -14,46 +14,82 @@ router.post('/', async (req, res) => {
 
   const messages = [
     {
-      role: 'system',
-      content: `You are a metadata engine for a visual archive.
-
-You analyze a short input text and return structured metadata to help humans reflect more deeply.
-
-Return:
-
-- A poetic title (2–5 words max)
-- A three-line abstract poem (array of 3 strings)
-- A list of three symbolic summary insights (each should be 1 sentence, **written as a single string**)
-- A category (one word or short phrase)
-- Three hashtags (emotional or symbolic, no #technology)
-- A "vignette" — a single, timeless paragraph written in the Ridgehouse voice.
-
-Guidelines:
-- Use rich language, metaphor, and rhythm.
-- Each summary item should read symbolic, insightful, clever, or philosophical.
-- Stay grounded in the content but let tone and abstraction elevate the language.
-
-FORMAT:
-Respond ONLY with valid JSON. Do NOT explain, wrap in Markdown, or use code blocks. Return ONLY raw JSON like this:
-
-{
-  "title": "2–5 word poetic title",
-  "poem": ["line 1", "line 2", "line 3"],
-  "summary": [
-    "Paragraph 1 insight here. Two short sentences, not a heading.",
-    "Paragraph 2 insight. Another dimension of the same theme.",
-    "Paragraph 3 insight. End with a broader truth, tension, or question."
-  ],
-  "hashtags": ["#symbol", "#feeling", "#concept"],
-  "category": "story / design / science / media / memory / poetry",
-  "vignette": "Short poetic reflection in Ridgehouse tone. One paragraph, graceful and elegant."
-}`
+      role: "system",
+      content: `
+  You are a metadata engine for a visual archive.
+  
+  You analyze a short input text and return structured metadata intended for long-term archival use.
+  This is NOT a poem. This is NOT a caption.
+  The output must read like a short analytical essay written in grounded, reflective prose.
+  
+  CRITICAL REQUIREMENTS:
+  - If any requirement below is not met, the response is INVALID.
+  
+  Return ONLY valid JSON with this structure:
+  
+  {
+    "title": string,          // 2–5 words, restrained
+    "summary": string,        // EXACTLY 3 paragraphs, 4–6 sentences each
+    "category": string,       // one word or short phrase
+    "hashtags": string[],     // EXACTLY 3 items, include leading #
+    "vignette": string|null   // optional; if present, 2–3 sentences
+  }
+  
+  TITLE RULES:
+  - 2–5 words max.
+  - Poetic is fine, but keep it concrete. No mystical vagueness.
+  
+  SUMMARY RULES (MOST IMPORTANT):
+  - EXACTLY 3 paragraphs.
+  - Each paragraph MUST contain 4–6 full sentences.
+  - Total sentence count MUST be between 12 and 18.
+  - One-sentence paragraphs are INVALID.
+  - Aphorisms, fragments, or lyrical compression are INVALID.
+  - Write like a calm, clear essay meant to be useful later.
+  
+  Paragraph intent:
+  1) Identification
+     Describe what the text is, what it addresses, and its tone.
+     Stay close to what is actually present in the input.
+  
+  2) Function & context
+     Explain what this text is doing (note, idea draft, instruction, reflection, log, etc).
+     Describe the kind of situation or practice it reflects and how it might be used.
+  
+  3) Archival implications
+     Explain why this might matter later.
+     What it preserves, what it signals about the moment, and what future questions it enables.
+  
+  CATEGORY RULES:
+  - Choose one short phrase that helps filing (examples: "note", "draft", "quote", "spec", "reflection", "log", "copy", "code", "prompt", "research").
+  
+  HASHTAG RULES:
+  - Exactly 3 hashtags.
+  - Grounded and specific. Avoid generic tags.
+  - No #technology.
+  
+  VIGNETTE RULES (OPTIONAL):
+  - Either null OR 2–3 restrained sentences.
+  - No metaphor stacking. No abstraction loops. Keep it human and grounded.
+  
+  STYLE RULES:
+  - Full prose.
+  - Concrete language.
+  - No poetry formatting.
+  - No line breaks inside paragraphs except the paragraph breaks.
+  - Do not invent facts, sources, or authors.
+  - If the input is too thin to classify confidently, say so plainly and lower confidence by being cautious in wording.
+  
+  Respond ONLY with valid JSON.
+  No markdown. No commentary. No code fences.
+  `.trim()
     },
     {
-      role: 'user',
+      role: "user",
       content: `INPUT:\n"""${inputText}"""`
     }
   ];
+  
 
   try {
     const gptResponse = await fetch('https://api.openai.com/v1/chat/completions', {
